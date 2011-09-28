@@ -251,6 +251,22 @@ class Vinmigrate
 		return $this->migrate_to($highest, $options);
 	}
 	
+	//Sets the migration version to the one given
+	//does not actually run any UP or bootstrap functions
+	public function set_version($number)
+	{
+		$sql = "
+			DELETE FROM " . $this->config['migrations_table'];
+		mysql_query($sql);
+		
+		for($i = 1; $i <= $number; $i++)
+		{
+			$this->save_version($i);
+			$this->save_bootstrapped($i);
+		}
+	}
+	
+	//Saves that a migration's UP has been ran
 	public function save_version($migration)
 	{
 		$migration = is_numeric($migration) ? $this->get_migration($migration) : $migration;
@@ -328,7 +344,6 @@ class Vinmigrate
 						
 						if($options['run_bootstraps'] && $this->has_bootstrap($migration))
 						{
-							$this->save_bootstrapped($migration);
 							$this->notices[] = "Bootstrapping migration " . $migration['number'] . "";
 							$this->run_bootstrap($migration);
 						}
@@ -386,9 +401,19 @@ class Vinmigrate
 	Runs the bootstrap function of a given migration
 	Bootstraps are for creating and altering data
 	*/
-	public function run_bootstrap($migration)
+	public function run_bootstrap($migration, $save = TRUE)
 	{
-		return $this->run($migration, 'bootstrap');
+		if($this->run($migration, 'bootstrap'))
+		{
+			if($save)
+			{
+				$this->save_bootstrapped($migration);
+			}
+			
+			return TRUE;
+		}
+		
+		return FALSE;
 	}
 	
 	//Runs a migrations up or down function or its bootstrap function
