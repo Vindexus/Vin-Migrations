@@ -359,6 +359,11 @@ class Vinmigrate
 		while($i != $number)
 		{
 			$i += $direction == 'up' ? 1 : -1;
+			if($i == $number && $direction == 'down')
+			{
+				break;
+			}
+			
 			if(!in_array($i, $options['skip_migrations']) && $i)
 			{
 				if(!$migration = $this->get_migration($i))

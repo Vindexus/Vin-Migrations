@@ -29,7 +29,14 @@ if($vin_migrate->init())
 	}
 	else
 	{
-		$success = $vin_migrate->$action($_GET['number']);
+		if(!isset($_GET['number']) || !is_numeric($_GET['number']))
+		{
+			$vin_migrate->errors[] = "Missing number for " . $action . ". Add a &get={number} to your URL.";
+		}
+		else
+		{
+			$success = $vin_migrate->$action($_GET['number']);
+		}
 	}
 }
 
