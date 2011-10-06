@@ -13,20 +13,11 @@ class Vinmigrate
 	
 	public function init()
 	{
-		if(file_exists('config.php'))
-		{
-			include('config.php');
-		}
-		else
-		{
-			$this->errors[] = "Config.php file not found.";
-		}
+		$this->load_config();
 		
-		$this->config = $config;
-				
 		if(!is_dir($this->config['migrations_path']))
 		{
-			$this->errors[] = "Cannot find migrationss folder at " . $this->config['migrations_path'];
+			$this->errors[] = "Cannot find migrations folder at " . $this->config['migrations_path'];
 		}
 		
 		if($this->connect())
@@ -38,7 +29,30 @@ class Vinmigrate
 		return $this->no_errors();
 	}
 	
-	//Connect to the mysql database based on the config file
+	/*
+	* Load the config file for vinmigrations
+	* Useful for overloading with child classes
+	*/
+	public function load_config()
+	{
+		if(file_exists('config.php'))
+		{
+			include('config.php');
+		}
+		else
+		{
+			$this->errors[] = "Config.php file not found.";
+			return FALSE;
+		}
+		
+		$this->config = $config;
+		return TRUE;
+	}
+	
+	/*
+	* Connect to the mysql database based on the config file
+	* When using vinmigrate in a framework with DB access you can just override this and return TRUE
+	*/
 	public function connect()
 	{
 		$db = $this->config['db'];
@@ -78,7 +92,10 @@ class Vinmigrate
 	//Returns a specific migration
 	public function get_migration($number)
 	{
-		$migrations = $this->get_migrations();
+		if(!$migrations = $this->get_migrations())
+		{
+			return FALSE;
+		}
 		
 		if(isset($migrations[$number]))
 		{
@@ -214,6 +231,7 @@ class Vinmigrate
 		return FALSE;
 	}
 	
+	//Returns the current version that that the migration table says we are at
 	public function get_current_version()
 	{
 		$result = mysql_query("SELECT MAX(version) as version FROM " . $this->config['migrations_table']);
@@ -261,8 +279,15 @@ class Vinmigrate
 		
 		for($i = 1; $i <= $number; $i++)
 		{
-			$this->save_version($i);
-			$this->save_bootstrapped($i);
+			if(!$this->save_version($i))
+			{
+				return FALSE;
+			}
+			
+			if(!$this->save_bootstrapped($i))
+			{
+				return FALSE;
+			}
 		}
 	}
 	
@@ -273,24 +298,31 @@ class Vinmigrate
 		$sql = "
 			INSERT INTO " . $this->config['migrations_table'] . " (version, bootstrapped)
 			VALUES (" . $migration['number'] . ",0)";
+		$this->notices[] = "Adding version " . $migration['number'];
 		return mysql_query($sql);
 	}
 	
+	//Removes a version from the vinmigration table
 	public function remove_version($migration)
 	{
 		$migration = is_numeric($migration) ? $this->get_migration($migration) : $migration;
-		return mysql_query("
-			DELETE FROM " . $this->config['migrations_table'] . "
+		$sql = "DELETE FROM " . $this->config['migrations_table'] . "
 			WHERE version = " . $migration['number'] . "
-			LIMIT 1");
+			LIMIT 1";
+		
+		$this->notices[] = "Removing version " . $migration['number'];		
+		return mysql_query($sql);
 	}
 	
-	public function save_bootstrapped($migration)
+	//Sets a version's bootstrap status
+	//Generally just 1 or 0, but can be used to store pagination for long bootstraps
+	//that require being run in different batches
+	public function save_bootstrapped($migration, $value = 1)
 	{
 		$migration = is_numeric($migration) ? $this->get_migration($migration) : $migration;
 		return mysql_query("
 			UPDATE " . $this->config['migrations_table'] . " 
-			SET bootstrapped = 1
+			SET bootstrapped = " . $value . "
 			WHERE version = " . $migration['number'] . "
 			LIMIT 1");
 	}
@@ -401,19 +433,35 @@ class Vinmigrate
 	Runs the bootstrap function of a given migration
 	Bootstraps are for creating and altering data
 	*/
-	public function run_bootstrap($migration, $save = TRUE)
+	public function run_bootstrap($migration, $args = array())
 	{
-		if($this->run($migration, 'bootstrap'))
+		$migration = is_numeric($migration) ? $this->get_migration($migration) : $migration;
+				
+		if($bootstrap_value = call_user_func_array(array($migration['object'], 'bootstrap'), $args))
 		{
-			if($save)
+			if($bootstrap_value)
 			{
-				$this->save_bootstrapped($migration);
+				$this->save_bootstrapped($migration, $bootstrap_value);
 			}
 			
-			return TRUE;
+			$return = TRUE;
+		}
+		else
+		{
+			$return = FALSE;
 		}
 		
-		return FALSE;
+		if(isset($migration['object']->notices) && is_array($migration['object']->notices))
+		{
+			$this->notices = array_merge($this->notices, $migration['object']->notices);
+		}
+		
+		if(isset($migration['object']->errors) && is_array($migration['object']->errors))
+		{
+			$this->errors = array_merge($this->errors, $migration['object']->errors);
+		}
+		
+		return $return;
 	}
 	
 	//Runs a migrations up or down function or its bootstrap function
@@ -424,9 +472,23 @@ class Vinmigrate
 		
 		if($migration['object']->$method() !== FALSE)
 		{
-			return TRUE;
+			$return = TRUE;
+		}
+		else
+		{
+			$return = FALSE;
 		}
 		
-		return FALSE;
+		if(isset($migration['object']->notices) && is_array($migration['object']->notices))
+		{
+			$this->notices = array_merge($this->notices, $migration['object']->notices);
+		}
+		
+		if(isset($migration['object']->errors) && is_array($migration['object']->errors))
+		{
+			$this->errors = array_merge($this->errors, $migration['object']->errors);
+		}
+				
+		return $return;
 	}
 }
