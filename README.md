@@ -1,59 +1,9 @@
-<style>
-body
-{
-	font-family: Arial, Verdana;
-	font-size: 14px;
-	line-height: 1.3;
-	padding: 20px;
-}
-
-h2
-{
-	margin-bottom: 0px;
-}
-
-div.section
-{
-	margin-bottom: 20px;
-}
-
-dt
-{
-	font-weight: bold;
-}
-
-li
-{
-	margin: 0 0 5px 0;
-}
-
-dd
-{
-	margin: 0 0 10px 10px;
-}
-</style>
-<div class="header">
-	<h1>Vin Migrations - Database Versioning With Migration Files in PHP and MySQL</h1>
-	<ul>
-		<li>Author: Colin "Vindexus" Kierans</li>
-		<li>Version: 1.0</li>
-		<li>Last updated: Sept 20th 2011</li>
-		<li>License: none at the moment</li>
-	</ul>
-	<ul>
-		<li><a href="#faq">FAQ</a></li>
-		<li><a href="#installing">Usage</a></li>
-		<li><a href="#creating">Creating Migrations</a></li>
-		<li><a href="#download">Download</a></li>
-		<li><a href="#examples">Examples</a>
-			<ul>
-				<li><a href="#001_users">001_users.php</a></li>
-				<li><a href="#002_roles">002_roles.php</a></li>
-				<li><a href="#003_roles_many_to_many">003_roles_many_to_many.php</a></li>
-			</ul>
-		</li>
-	</ul>
-</div><!-- .header -->
+Vin Migrations - Database Versioning With Migration Files in PHP and MySQL
+===========================================================================
+ * Author: Colin "Vindexus" Kierans</li>
+ * Version: 1.0</li>
+ * Last updated: Sept 20th 2011</li>
+ * License: none at the moment</li>
 <div class="section">
 	<a name="faq">
 	<h2>Frequently Asked Questions</h2>
