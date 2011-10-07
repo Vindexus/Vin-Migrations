@@ -1,3 +1,4 @@
+<a name="vin-top"></a>
 Vin Migrations - Database Versioning With Migration Files in PHP and MySQL
 ===========================================================================
  * Author: Colin "Vindexus" Kierans</li>
@@ -5,9 +6,9 @@ Vin Migrations - Database Versioning With Migration Files in PHP and MySQL
  * Last updated: Sept 20th 2011</li>
  * License: none at the moment</li>
 <div class="section">
-	<a name="faq">
+	<a name="faq"></
 	<h2>Frequently Asked Questions</h2>
-	<a href="#top">Back to Top</a>
+	<a href="#vin-top">Back to Top</a>
 	<dl>
 		<dt>What are database migrations?</dt>
 		<dd>Database migrations are files that let you change your database from one version of a schema to another using code. They allow you to both "upgrade" and "downgrade" your database.</dd>
@@ -20,7 +21,7 @@ Vin Migrations - Database Versioning With Migration Files in PHP and MySQL
 <div class="section">
 	<a name="installing"></a>
 	<h2>Installing</h2>
-	<a href="#top">Back to Top</a>
+	<a href="#vin-top">Back to Top</a>
 	<p>To install the Vin Migrations do the following steps.</p>
 	<ol>
 		<li>Unzip the Vin Migration migration files</li>
@@ -33,7 +34,7 @@ Vin Migrations - Database Versioning With Migration Files in PHP and MySQL
 <div class="section">
 	<a name="creating"></a>
 	<h2>Creating Migrations</h2>
-	<a href="#top">Back to Top</a>
+	<a href="#vin-top">Back to Top</a>
 	<p>To create a new migration create a new file in the "migrations" folder in your Vin Migrations folder.</p>
 	<ul>
 		<li>The files must be named in a <em>number</em>_classname.php format</li>
@@ -44,28 +45,18 @@ Vin Migrations - Database Versioning With Migration Files in PHP and MySQL
 	</ul>
 </div>
 
-<div class="section">
-	<a name="download"></a>
-	<h2>Download</h2>
-	<a href="#top">Back to Top</a>
-	<p><a href="/migrations/vinmigrations-1.0.zip">Download the zip file</a> or view each file: </p>
-	<ul>
-		<li><a href="/migrations/vinmigrations.dl.php">vinmigrate.php</a></li>
-		<li><a href="/migrations/config-sample.dl.php">config-sample.php</a></li>
-	</ul>
-</div>
 
 <div class="section">
 	<a name="download"></a>
 	<h2>Example Migrations</h2>
-	<a href="#top">Back to Top</a>
+	<a href="#vin-top">Back to Top</a>
 	<p>The following migration files are examples of migrations that are created as an application's needs and functions change.</p>
-</div>
 	<a name="001_users"></a>
 	<h3>File: 001_users.php</h3>
-	<a href="#top">Back to Top</a>
+	<a href="#vin-top">Back to Top</a>
 	<p>At this point the application only has a users table.</p>
-	<pre>
+</div>
+<pre>
 class Users
 {
 	function up()
@@ -89,7 +80,7 @@ class Users
 <a name="002_roles"></a>
 <div class="section">
 	<h3>File: 002_roles.php</h3>
-	<a href="#top">Back to Top</a>
+	<a href="#vin-top">Back to Top</a>
 	<p>The application now requires each user to have a role. This migration creates that table. Its "bootstrap" function populates the database with the defaults.</p>
 	<pre>
 class Roles
@@ -125,7 +116,7 @@ class Roles
 <a name="003_roles_many_to_many"></a>
 <div class="section">
 	<h3>File: 003_roles_many_to_many.php</h3>
-	<a href="#top">Back to Top</a>
+	<a href="#vin-top">Back to Top</a>
 	<p>The application has changed so that users now have multiple roles instead of just one. The up function creates the table, and the bootstrap function grabs the old data and migrates it into the new schema.</p>
 	<pre>
 class Roles_many_to_many
