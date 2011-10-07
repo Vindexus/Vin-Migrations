@@ -1,12 +1,21 @@
 <a name="vin-top"></a>
 Vin Migrations - Database Versioning With Migration Files in PHP and MySQL
 ===========================================================================
- * Author: Colin "Vindexus" Kierans</li>
- * Version: 1.0</li>
- * Last updated: Sept 20th 2011</li>
- * License: none at the moment</li>
+ * Author: Colin "Vindexus" Kierans
+ * Version: 1.0
+ * Last updated: Sept 20th 2011
+ * License: MIT
+
+Navigation
+----------
+
+ * <a href="#faq">Frequently Asked Questions</a>
+ * <a href="#installing">Installing</a>
+ * <a href="#creating">Creating Migrations</a>
+ * <a href="#examples">Example Migrations</a>
+ 
 <div class="section">
-	<a name="faq"></
+	<a name="faq"></a>
 	<h2>Frequently Asked Questions</h2>
 	<a href="#vin-top">Back to Top</a>
 	<dl>
@@ -45,9 +54,8 @@ Vin Migrations - Database Versioning With Migration Files in PHP and MySQL
 	</ul>
 </div>
 
-
 <div class="section">
-	<a name="download"></a>
+	<a name="examples"></a>
 	<h2>Example Migrations</h2>
 	<a href="#vin-top">Back to Top</a>
 	<p>The following migration files are examples of migrations that are created as an application's needs and functions change.</p>
