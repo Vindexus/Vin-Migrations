@@ -2,8 +2,8 @@
 Vin Migrations - Database Versioning With Migration Files in PHP and MySQL
 ===========================================================================
  * Author: Colin "Vindexus" Kierans
- * Version: 1.0
- * Last updated: Sept 20th 2011
+ * Version: 1.1
+ * Last updated: October 6th 2011
  * License: MIT
 
 Navigation
