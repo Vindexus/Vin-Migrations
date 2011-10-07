@@ -24,6 +24,9 @@ Navigation
 		
 		<dt>Why should I use database migrations?</dt>
 		<dd>Migrations are an easy way to ensure that any time you are replicating the database across different environments you are being consistent with the schema. This is useful when you have a development environment and a production environment, and everything in between.</dd>
+		
+		<dt>How do I run my migration files?</dt>
+		<dd>If you are using the ci_controller.php file in CodeIgniter, you can navigation to http://example.com/migrate/run_to/20. If you are using the straight PHP controller.php you can navigate to http://example.com/vinmigrate/controller.php?action=run_to&number=45</dd>
 	</dl>
 </a>
 
