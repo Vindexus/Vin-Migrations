@@ -59,22 +59,22 @@ Vin Migrations - Database Versioning With Migration Files in PHP and MySQL
 <pre>
 class Users
 {
-	function up()
-	{
-		mysql_query("
-			CREATE TABLE users (
-				id INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-				username VARCHAR(100)
-				);");
-	}
-	
-	function down()
-	{
-		mysql_query("
-			DROP TABLE users");
-	}
+    function up()
+    {
+        mysql_query("
+            CREATE TABLE users (
+                id INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                username VARCHAR(100)
+                );");
+    }
+    
+    function down()
+    {
+        mysql_query("
+            DROP TABLE users");
+    }
 }
-	</pre>
+   	</pre>
 </div>
 
 <a name="002_roles"></a>
@@ -85,30 +85,31 @@ class Users
 	<pre>
 class Roles
 {
-	function up()
-	{
-		mysql_query("
-			CREATE TABLE roles (
-				id INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-				name VARCHAR(100)
-				);");
-		mysql_query("
-			ALTER TABLE users ADD role_id INT(11) NOT NULL DEFAULT 0");
-	}
-	
-	function bootstrap()
-	{
-		mysql_query("
-			INSERT INTO roles (name) VALUES ('User','Moderator','Admin');");
-	}
-	
-	function down()
-	{
-		mysql_query("
-			DROP TABLE roles");
-		mysql_query("
-			ALTER TABLE users DROP COLUMN role_id");
-	}
+    function up()
+    {
+        mysql_query("
+            CREATE TABLE roles (
+                id INT(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                name VARCHAR(100)
+                );");
+        mysql_query("
+            ALTER TABLE users ADD role_id INT(11) NOT NULL DEFAULT 0");
+    }
+    
+    function bootstrap()
+    {
+        mysql_query("
+            INSERT INTO roles (name) VALUES ('User'),('Moderator'),('Admin');");
+		return TRUE;
+    }
+    
+    function down()
+    {
+        mysql_query("
+            DROP TABLE roles");
+        mysql_query("
+            ALTER TABLE users DROP COLUMN role_id");
+    }
 }
 	</pre>
 </div>
@@ -121,41 +122,43 @@ class Roles
 	<pre>
 class Roles_many_to_many
 {
-	function up()
-	{
-		mysql_query("
-			CREATE TABLE users_to_roles (
-				user_id INT(11),
-				role_id INT(11)
-				);");
-	}
-	
-	function bootstrap()
-	{
-		$result = mysql_query("
-			SELECT id, role_id
-			FROM users
-			WHERE role_id > 0");
+    function up()
+    {
+        mysql_query("
+            CREATE TABLE users_to_roles (
+                user_id INT(11),
+                role_id INT(11)
+                );");
+    }
+    
+    function bootstrap()
+    {
+        $result = mysql_query("
+            SELECT id, role_id
+            FROM users
+            WHERE role_id > 0");
+        
+        $inserts = array();
+        while($row = mysql_fetch_array($result))
+        {
+            $inserts[] = "(" . $row['id'] . "," . $row['role_id'] . ")";
+        }
+        
+        if(count($inserts) > 0)
+        {
+            mysql_query("
+                INSERT INTO users_to_roles (user_id, role_id)
+                VALUES " . join(",", $inserts));
+        }
 		
-		$inserts = array();
-		while($row = mysql_fetch_array($result))
-		{
-			$inserts[] = "(" . $row['id'] . "," . $row['role_id'] . ")";
-		}
-		
-		if(count($inserts) > 0)
-		{
-			mysql_query("
-				INSERT INTO users_to_roles (user_id, role_id)
-				VALUES " . join(",", $inserts));
-		}
-	}
-	
-	function down()
-	{
-		mysql_query("
-			DROP TABLE users_to_roles");
-	}
+		return TRUE;
+    }
+    
+    function down()
+    {
+        mysql_query("
+            DROP TABLE users_to_roles");
+    }
 }
-	</pre>
+   	</pre>
 </div>

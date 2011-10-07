@@ -277,6 +277,12 @@ class Vinmigrate
 			DELETE FROM " . $this->config['migrations_table'];
 		mysql_query($sql);
 		
+		if($number <= 0)
+		{
+			$this->success_message = "Saved version as 0";
+			return TRUE;
+		}
+		
 		for($i = 1; $i <= $number; $i++)
 		{
 			if(!$this->save_version($i))
@@ -289,6 +295,8 @@ class Vinmigrate
 				return FALSE;
 			}
 		}
+		
+		$this->success_message = "Saved version as " . $i;
 	}
 	
 	//Saves that a migration's UP has been ran
